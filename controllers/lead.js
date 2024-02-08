@@ -4,6 +4,9 @@ const leadRouter = require('express').Router()
 // Utils
 const sendMail = require('../utils/mailer')
 
+// Constants
+const EMAIL_TO = process.env.EMAIL_TO
+
 leadRouter.post('/send-email/', async (request, response, next) => {
   try {
     const data = request.body
@@ -31,7 +34,7 @@ leadRouter.post('/send-email/', async (request, response, next) => {
       }
     }
 
-    await sendMail(email, 'Un cliente solicito tu servicio', formattedText).catch(error => {
+    await sendMail(EMAIL_TO, 'Un cliente solicito tu servicio', formattedText).catch(error => {
       response.status(500).json({
         error: `Hubo un error: ${error.message}`
       })
