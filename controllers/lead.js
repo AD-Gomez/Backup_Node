@@ -1,5 +1,5 @@
-// Routing
-const leadRouter = require('express').Router()
+const express = require('express')
+const leadRouter = express.Router()
 
 // Utils
 const sendMail = require('../utils/mailer')
@@ -13,35 +13,52 @@ leadRouter.post('/send-email/', async (request, response, next) => {
     const email = data.email
 
     if (!email) {
-      response.status(400).json({
+      return response.status(400).json({
         error: 'Es necesario el email.'
       })
     }
 
-    let formattedText = ''
-    for (const key in data) {
-      if (Array.isArray(data[key])) {
-        // Si el valor es un array, iteramos sobre cada elemento
-        data[key].forEach((item, index) => {
-          formattedText += `${key.charAt(0).toUpperCase() + key.slice(1)} ${index + 1}:\n`
-          for (const itemKey in item) {
-            formattedText += `  ${itemKey.charAt(0).toUpperCase() + itemKey.slice(1)}: ${item[itemKey]}\n`
-          }
-        })
-      } else {
-        // Imprimimos la clave y el valor directamente
-        formattedText += `${key.charAt(0).toUpperCase() + key.slice(1)}: ${data[key]}\n`
-      }
+    // Generar el contenido del email
+    let vehiclesText = ''
+    let index = 1
+
+    while (data[`vehicle_make_${index}`]) {
+      vehiclesText += `
+Vehicle(${index})
+
+Vehicle_model_year_${index}: ${data[`vehicle_model_year_${index}`]}
+Vehicle_make_${index}: ${data[`vehicle_make_${index}`]}
+Vehicle_model_${index}: ${data[`vehicle_model_${index}`]}
+Vehicle_inop_${index}: ${data[`vehicle_inop_${index}`]}
+      `
+      index++
     }
 
-    await sendMail(EMAIL_TO, 'Un cliente solicito tu servicio', formattedText).catch(error => {
-      response.status(500).json({
-        error: `Hubo un error: ${error.message}`
+    const formattedText = `
+Customer
+
+First_name: ${data.first_name}
+Phone: ${data.phone}
+Email: ${data.email}
+
+Route
+
+Origin: ${data.origin}
+Destination: ${data.destination}
+
+${vehiclesText}
+
+Transport_type: ${data.transport_type}
+Ship_date: ${data.ship_date}
+    `
+
+    await sendMail(EMAIL_TO, 'Un cliente solicitó tu servicio', formattedText)
+      .then(() => response.status(200).json({ message: 'Correo enviado.' }))
+      .catch(error => {
+        response.status(500).json({
+          error: `Hubo un error: ${error.message}`
+        })
       })
-    })
-    response.status(200).json({
-      message: 'Correo enviado.'
-    })
   } catch (error) {
     next(error)
   }
