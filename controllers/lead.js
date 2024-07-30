@@ -35,7 +35,7 @@ Vehicle_inop_${index}: ${data[`vehicle_inop_${index}`]}
     }
 
     const formattedText = `
-Order_id: ${data.number_lead}
+Order_ID: ${data.number_lead}
 Customer
 
 First_name: ${data.first_name}
