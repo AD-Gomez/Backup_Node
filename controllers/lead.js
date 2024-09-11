@@ -65,4 +65,26 @@ Ship_date: ${data.ship_date}
   }
 })
 
+leadRouter.post('/send-bulk-emails/', async (request, response, next) => {
+  try {
+    const { recipients } = request.body
+
+    if (!Array.isArray(recipients) || recipients.length === 0) {
+      return response.status(400).json({ message: 'Debe proporcionar una lista de destinatarios válida' })
+    }
+    console.log(recipients)
+    const text = 'Hola, email de prueba'
+
+    await sendMail(recipients, '', text)
+      .then(() => response.status(200).json({ message: 'Correo enviado.' }))
+      .catch(error => {
+        response.status(500).json({
+          error: `Hubo un error: ${error.message}`
+        })
+      })
+  } catch (error) {
+    next(error)
+  }
+})
+
 module.exports = leadRouter

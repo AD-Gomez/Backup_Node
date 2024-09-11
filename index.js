@@ -1,5 +1,6 @@
 // Importing dependencies
 require('dotenv').config()
+const connectDB = require('./mongo.js')
 const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
@@ -12,6 +13,7 @@ const app = express()
 
 // Importing controllers
 const leadRouter = require('./controllers/lead')
+const userRouter = require('./controllers/user.js')
 
 // Implementing modules in our app server
 app.use(cors())
@@ -21,9 +23,13 @@ app.use(express.json())
 // Implementing Routing...
 
 app.use('/api/lead/', leadRouter)
+app.use('/api/user/', userRouter)
 
 // Implementing middleware
 app.use(errorHandler)
+
+// Conectar a MongoDB
+connectDB()
 
 const PORT = process.env.PORT
 const server = app.listen(PORT, () => {
