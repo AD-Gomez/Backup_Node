@@ -4,7 +4,7 @@ const express = require('express')
 const usersRouter = express.Router()
 
 // Schema
-const User = require('../models/users')
+const User = require('../models/Users')
 
 usersRouter.post('/', async (req, res) => {
   try {
