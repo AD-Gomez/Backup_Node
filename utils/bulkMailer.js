@@ -17,7 +17,6 @@ async function sendBulkMail (recipients, subject, text) {
     }
   })
 
-  // Si 'recipients' es un array, lo unimos en un string separado por comas
   const to = Array.isArray(recipients) ? recipients.join(',') : recipients
 
   // Send mail with defined transport object
