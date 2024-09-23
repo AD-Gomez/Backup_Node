@@ -14,6 +14,8 @@ const app = express()
 // Importing controllers
 const leadRouter = require('./controllers/lead')
 const userRouter = require('./controllers/user.js')
+const authRouter = require('./controllers/auth.js')
+const adminRouter = require('./controllers/admin.js')
 
 // Implementing modules in our app server
 app.use(cors())
@@ -24,6 +26,8 @@ app.use(express.json())
 
 app.use('/api/lead/', leadRouter)
 app.use('/api/user/', userRouter)
+app.use('/api/auth/', authRouter)
+app.use('/api/admin/', adminRouter)
 
 // Implementing middleware
 app.use(errorHandler)
